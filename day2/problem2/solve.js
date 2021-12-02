@@ -24,7 +24,7 @@ const positionProduct = (err, data) => {
 		global[direction](units);
 	});
 
-    console.log(position[0] * position[1]);
+	console.log(position[0] * position[1]);
 }
 
 readFile(textFile, encoding, positionProduct);

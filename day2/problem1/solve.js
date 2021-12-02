@@ -22,7 +22,7 @@ const positionProduct = (err, data) => {
 		position[posIdx] += posDir * unit;
 	});
 
-    console.log(position[0] * position[1]);
+	console.log(position[0] * position[1]);
 }
 
 readFile(textFile, encoding, positionProduct);
