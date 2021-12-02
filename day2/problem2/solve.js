@@ -4,22 +4,24 @@ const readFile = require('fs').readFile;
 const textFile = "./commands.txt";
 const encoding = "utf8";
 
-const commandMap = {
-	forward: [0, 1],
-	down: [1, 1],
-	up: [1, -1],
-};
+const position = [0, 0];
+let aim = 0;
+
+global.down = (units) => { aim += units; }
+global.up = (units) => { aim -= units; }
+global.forward = (units) => {
+	position[0] += units;
+	position[1] += units * aim;
+}
 
 const positionProduct = (err, data) => {
 	const commands = data.split("\n");
-	const position = [0, 0];
 
 	commands.forEach((command) => {
 		const [direction, amount] = command.split(" ");
-		const [posIdx, posDir] = commandMap[direction];
-		const unit = parseInt(amount);
+		const units = parseInt(amount);
 
-		position[posIdx] += posDir * unit;
+		global[direction](units);
 	});
 
     console.log(position[0] * position[1]);
