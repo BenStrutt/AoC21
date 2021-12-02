@@ -4,7 +4,7 @@ const readFile = require('fs').readFile;
 const textFile = "./numbers.txt";
 const encoding = "utf8";
 
-function findDepthIncrease(err, data) {
+function depthIncreaseAmount(err, data) {
 	const numbers = data.split("\n").map(str => parseInt(str));
 	
 	let increases = 0;
@@ -18,4 +18,4 @@ function findDepthIncrease(err, data) {
 	console.log({increases});
 }
 
-readFile(textFile, encoding, findDepthIncrease);
+readFile(textFile, encoding, depthIncreaseAmount);
