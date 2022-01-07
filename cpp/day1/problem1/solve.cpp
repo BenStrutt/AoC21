@@ -3,11 +3,14 @@
 
 int main(void)
 {
-	std::ifstream myFile("numbers.txt");
+	std::ifstream myFile("../numbers.txt");
 
 	std::string myString;
 
-	if (!myFile.is_open()) { return 1; }
+	if (!myFile.is_open()) {
+		std::cout << "Unable to open file\n";
+		return 1;
+	}
 
 	int increases = 0;
 	int previousNum = INT_MIN;
