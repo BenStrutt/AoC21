@@ -23,35 +23,6 @@ const positionProduct = (err, data) => {
 		}
 	}
 	boards.push(board.slice());
-
-	// mark numbers in order until a winning board
-	numberLoop:
-	for (const numberStr of calledNumbers) {
-		const number = parseInt(numberStr);
-
-		for (let i = 0; i < boards.length; i++) {
-			const board = boards[i];
-
-			for (let y = 0; y < board.length; y++) {
-				const line = board[y];
-
-				for (let x = 0; x < line.length; x++) {
-					if (parseInt(line[x]) === number) {
-						board[y][x] = parseInt(line[x]);
-					}
-				}
-			}
-
-			const winningLine = getWinningLine(board);
-			if (winningLine.length > 0) {
-				const winningScore = winningLine.reduce((a, b) => a + b) * number;
-				console.log(winningLine);
-				console.log(number);
-				console.log(winningScore);
-				break numberLoop;
-			}
-		}
-	}
 }
 
 function getWinningLine(board) {
