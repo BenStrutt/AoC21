@@ -1,10 +1,10 @@
 "use strict";
 
 const readFile = require('fs').readFile;
-const textFile = "./bingo.txt";
+const textFile = "../bingo.txt";
 const encoding = "utf8";
 
-const positionProduct = (err, data) => {
+const bingo = (err, data) => {
 	const lines = data.split("\n");
 	const calledNumbers = lines.shift().split(",").map(num => parseInt(num));
 	const boards = [];
@@ -22,37 +22,93 @@ const positionProduct = (err, data) => {
 			board.push(line);
 		}
 	}
+
 	boards.push(board.slice());
-}
+	const boardMarks = boards.map(_ => 0);
 
-function getWinningLine(board) {
-	// // check rows
-	// rowLoop:
-	// for (let y = 0; y < board.length; y++) {
-	// 	const line = board[y];
+	for (const number of calledNumbers) {
+		let checkForWin = false;
 
-	// 	for (let x = 0; x < line.length; x++) {
-	// 		if (typeof line[x] === "string") { continue rowLoop; }
-	// 	}
+		for (let i = 0; i < boards.length; i++) {
+			const board = boards[i];
 
-	// 	return line;
-	// }
+			for (let row = 0; row < board.length; row++) {
+				for (let col = 0; col < board[0].length; col++) {
+					if (parseInt(board[row][col]) === number) {
+						board[row][col] = "x" + board[row][col]
+						boardMarks[i]++
 
-	// check columns
-	columnLoop:
-	for (let x = 0; x < board[0].length; x++) {
-		const line = [];
-
-		for (let y = 0; y < board.length; y++) {
-			if (typeof board[y][x] === "string") { continue columnLoop; }
-
-			line.push(board[y][x]);
+						if (boardMarks[i] === 5) {
+							checkForWin = true;
+						}
+					}
+				}
+			}
 		}
 
-		return line;
-	}
+		if (checkForWin) {
+			for (let i = 0; i < boards.length; i++) {
+				if (boardMarks[i] < 5) { continue; }
 
-	return [];
+				const board = boards[i];
+
+				if (isWin(board)) {
+					const unmarkedSum = getUnmarkedSum(board);
+
+					console.log(`Final Score: ${unmarkedSum * number}`);
+					return;
+				}
+			}
+		}
+	}
 }
 
-readFile(textFile, encoding, positionProduct);
+function isWin(board) {
+	// Check all rows for a win
+	for (const row of board) {
+		let winningLine = true;
+
+		for (const num of row) {
+			if (num[0] !== "x") {
+				winningLine = false;
+				break;
+			}
+		}
+
+		if (winningLine) {
+			return true;
+		}
+	}
+
+	// Check all columns for a win
+	for (let col = 0; col < board[0].length; col++) {
+		let winningLine = true;
+
+		for (let row = 0; row < board.length; row++) {
+			if (board[row][col][0] !== "x") {
+				winningLine = false;
+				break;
+			}
+		}
+
+		if (winningLine) {
+			return true;
+		}
+	}
+}
+
+function getUnmarkedSum(board) {
+	let sum = 0;
+
+	for (const row of board) {
+		for (const num of row) {
+			if (num[0] === "x") { continue; }
+
+			sum += parseInt(num);
+		}
+	}
+
+	return sum;
+}
+
+readFile(textFile, encoding, bingo);
