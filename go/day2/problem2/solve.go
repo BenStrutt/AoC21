@@ -9,11 +9,6 @@ import (
 	"strconv"
 )
 
-type move struct {
-	axis *int
-	direction int
-}
-
 func main() {
 	file, err := os.Open("../commands.txt")
 	if err != nil {
@@ -22,24 +17,26 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var horizontal, vertical int
-	dirMap := map[string]move{
-		"forward": move{&horizontal, 1},
-		"up": move{&vertical, -1},
-		"down": move{&vertical, 1},
-	}
+	var horizontal, vertical, aim int
+	aimDirMap := map[string]int{"down": 1, "up": -1}
 
 	for scanner.Scan() {
 		direction, amount := splitCommand(scanner.Text())
-		movement := dirMap[direction]
-		*movement.axis += amount * movement.direction
+
+		if direction == "forward" {
+			horizontal += amount
+			vertical += aim * amount
+			continue
+		}
+
+		aim += amount * aimDirMap[direction]
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(vertical * horizontal)
+	fmt.Println(horizontal * vertical)
 }
 
 func splitCommand(command string) (string, int) {
